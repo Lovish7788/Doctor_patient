@@ -14,7 +14,11 @@ connectDB();
 connectCloudinary();
 app.use(express.json());
 app.use(cors({
-  origin: process.env.FRONTEND_URL ||'https://doctor-patient-frontend.onrender.com' 
+  origin: 
+    [
+      process.env.FRONTEND_URL ||'https://doctor-patient-frontend.onrender.com'
+      process.env.ADMIN_FRONTEND_URL || 'https://doctor-patient-9amh.onrender.com'
+    ]
 }));
 app.use('/api/admin', adminRouter)
 app.use('/api/doctor', doctorRouter)

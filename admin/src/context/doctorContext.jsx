@@ -6,7 +6,7 @@ import axios from 'axios'
 export const DoctorContext = createContext();
 
 const DoctorContextProvider = (props) => {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL
+ const backendUrl = import.meta.env.VITE_BACKEND_URL || "srv-d96naegjs32c73996sn0";
     const [dToken, setDToken] = useState(localStorage.getItem('dToken') ? localStorage.getItem('dToken') : '')
     const [appointments, setAppointments] = useState([])
     const [dashData, setDashData] = useState(false)

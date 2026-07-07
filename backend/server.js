@@ -13,7 +13,9 @@ const port = process.env.PORT || 4000
 connectDB();
 connectCloudinary();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL ||'https://doctor-patient-frontend.onrender.com' 
+}));
 app.use('/api/admin', adminRouter)
 app.use('/api/doctor', doctorRouter)
 app.use('/api/user', userRouter)

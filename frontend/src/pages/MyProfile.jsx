@@ -5,7 +5,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 
 const MyProfile = () => {
-  const { userData, loadUserProfileData, backendUrl, token, setUserData } = useContext(AppContext)
+  const { userData, setUserData, loadUserProfileData, backendUrl, token } = useContext(AppContext)
 
 
   const [isEdit, setIsEdit] = useState(false)

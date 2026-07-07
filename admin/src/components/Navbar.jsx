@@ -1,10 +1,12 @@
 import React, { useContext } from 'react'
 import { assets } from '../assets/assets.js'
 import { AdminContext } from '../context/adminContext'
+import { DoctorContext } from '../context/doctorContext'
 import { useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
   const { aToken, setAToken } = useContext(AdminContext)
+  const { dToken, setDToken } = useContext(DoctorContext)
   const navigate = useNavigate()
 
   /**
@@ -15,6 +17,10 @@ const Navbar = () => {
     if (aToken) {
       setAToken('')
       localStorage.removeItem('aToken')
+    }
+    if (dToken) {
+      setDToken('')
+      localStorage.removeItem('dToken')
     }
   }
 

@@ -27,7 +27,7 @@ const authAdmin = async (req, res, next) => {
         }
     } catch (error) {
         console.log('Something went wrong', error)
-        res.status(500).json({ success: false, message: error.message });
+        res.json({ success: false, message: error.message });
     }
 
 }

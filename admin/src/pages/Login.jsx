@@ -2,15 +2,17 @@ import React, { useContext, useState } from 'react'
 import { AdminContext } from '../context/adminContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { DoctorContext } from '../context/doctorContext'
 
 const Login = () => {
   const [state, setState] = useState('Admin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-
+  
   const [showPassword, setShowPassword] = useState(false)
 
   const { setAToken, backendUrl } = useContext(AdminContext)
+  const {setDToken} = useContext(DoctorContext)
 
   /** 
    * Form submission handler for authentcation check.
@@ -31,9 +33,19 @@ const Login = () => {
         }
       } else {
         // Doctor Login stub (to be implemen  ted later)
-        toast.info("Doctor Login logic to be implemented.")
+        const {data} = await axios.post(backendUrl + '/api/doctor/login', {email,password})
+        if (data.success) {
+           console.log("doc token",data.token);
+           
+          localStorage.setItem('dToken', data.token)
+          setDToken(data.token)
+          toast.success("Login Successful!")
+        }else{
+          toast.error(data.message)
+        }
       }
-    } catch (error) {
+    } 
+    catch (error) {
       toast.error(error.message)
     }
   }

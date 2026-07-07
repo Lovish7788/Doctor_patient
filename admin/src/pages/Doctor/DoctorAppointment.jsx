@@ -1,15 +1,15 @@
 import React, { useContext, useEffect } from 'react'
-import { AdminContext } from '../../context/adminContext.jsx'
+import { DoctorContext } from '../../context/doctorContext'
 import { assets } from '../../assets/assets.js'
 
-const AllAppointments = () => {
-  const { aToken, getAllAppointments, appointments, cancelAppointment } = useContext(AdminContext)
+const DoctorAppointment = () => {
+  const { getAppointments, appointments, dToken, completeAppointment, cancelAppointment } = useContext(DoctorContext)
 
   useEffect(() => {
-    if (aToken) {
-      getAllAppointments()
+    if (dToken) {
+      getAppointments()
     }
-  }, [aToken])
+  }, [dToken])
 
   const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
   
@@ -47,14 +47,14 @@ const AllAppointments = () => {
       <div className='bg-white border border-gray-200 rounded-lg shadow-sm text-sm max-h-[80vh] overflow-y-scroll scrollbar-none'>
         
         {/* Table Header Row */}
-        <div className='hidden sm:grid grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] grid-flow-col items-center py-3 px-6 border-b border-gray-200 text-gray-500 font-semibold text-xs uppercase bg-gray-50/50'>
+        <div className='hidden sm:grid grid-cols-[0.5fr_3fr_1.5fr_1fr_3fr_1fr_1.5fr] grid-flow-col items-center py-3 px-6 border-b border-gray-200 text-gray-500 font-semibold text-xs uppercase bg-gray-50/50'>
           <p>#</p>
           <p>Patient</p>
+          <p>Payment</p>
           <p>Age</p>
           <p>Date & Time</p>
-          <p>Doctor</p>
           <p>Fees</p>
-          <p className='text-center'>Actions</p>
+          <p className='text-center'>Action</p>
         </div>
 
         {/* Table Content Row Mapping */}
@@ -62,7 +62,7 @@ const AllAppointments = () => {
           appointments.map((item, index) => (
             <div 
               key={index}
-              className='grid grid-cols-[1fr_3fr_1fr_3fr_3fr_1fr_1fr] sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] items-center text-gray-700 py-4 px-6 border-b border-gray-150 last:border-0 hover:bg-slate-50/40 transition-all duration-200'
+              className='grid grid-cols-[1fr_3fr_1.5fr_1fr_3fr_1fr_1.5fr] sm:grid-cols-[0.5fr_3fr_1.5fr_1fr_3fr_1fr_1.5fr] items-center text-gray-700 py-4 px-6 border-b border-gray-150 last:border-0 hover:bg-slate-50/40 transition-all duration-200'
             >
               {/* Row Index */}
               <p className='text-zinc-500 font-medium hidden sm:block'>{index + 1}</p>
@@ -77,42 +77,49 @@ const AllAppointments = () => {
                 <p className='font-medium text-neutral-800'>{item.userData.name}</p>
               </div>
 
-              {/* Patient Calculated Age */}
-              <p className='text-zinc-600 font-medium sm:text-left text-right'>{calculateAge(item.userData.dob)}</p>
+              {/* Payment Type Badge */}
+              <div>
+                {item.payment ? (
+                  <span className='text-xs font-semibold bg-green-50 text-green-500 border border-green-100 rounded-full px-3 py-1'>ONLINE</span>
+                ) : (
+                  <span className='text-xs font-semibold bg-blue-50 text-blue-500 border border-blue-100 rounded-full px-3 py-1'>CASH</span>
+                )}
+              </div>
+
+              {/* Patient Age */}
+              <p className='text-zinc-600 font-medium'>{calculateAge(item.userData.dob)}</p>
 
               {/* Date & Time */}
               <p className='text-zinc-600 font-medium'>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
 
-              {/* Doctor Details */}
-              <div className='flex items-center gap-3'>
-                <img 
-                  className='w-8 h-8 rounded-full object-cover border border-zinc-200 bg-stone-100' 
-                  src={item.docData.image} 
-                  alt={item.docData.name} 
-                />
-                <div className='flex flex-col'>
-                  <p className='font-medium text-neutral-800'>{item.docData.name}</p>
-                  <p className='text-xs text-zinc-400'>{item.docData.speciality}</p>
-                </div>
-              </div>
-
-              {/* Booking Fees */}
+              {/* Fees */}
               <p className='font-semibold text-zinc-900'>${item.amount}</p>
 
               {/* Action Column */}
-              <div className='flex justify-center items-center'>
+              <div className='flex justify-center items-center gap-3'>
                 {item.canceled ? (
                   <p className='text-red-400 text-xs font-semibold bg-red-50 px-2.5 py-1 rounded-full border border-red-100'>Cancelled</p>
                 ) : item.isCompleted ? (
                   <p className='text-green-500 text-xs font-semibold bg-green-50 px-2.5 py-1 rounded-full border border-green-100'>Completed</p>
                 ) : (
-                  <img 
-                    onClick={() => cancelAppointment(item._id)}
-                    className='w-10 h-10 p-2 cursor-pointer hover:bg-red-50 rounded-full transition-all duration-300 hover:scale-105' 
-                    src={assets.cancel_icon} 
-                    alt="Cancel Action" 
-                    title="Cancel Appointment"
-                  />
+                  <div className='flex items-center gap-2'>
+                    {/* Cancel Button */}
+                    <img 
+                      onClick={() => cancelAppointment(item._id)}
+                      className='w-9 h-9 p-2 cursor-pointer hover:bg-red-50 rounded-full transition-all duration-300 hover:scale-105' 
+                      src={assets.cancel_icon} 
+                      alt="Cancel" 
+                      title="Cancel Appointment"
+                    />
+                    {/* Complete Check Button */}
+                    <img 
+                      onClick={() => completeAppointment(item._id)}
+                      className='w-9 h-9 p-2 cursor-pointer hover:bg-green-50 rounded-full transition-all duration-300 hover:scale-105' 
+                      src={assets.tick_icon} 
+                      alt="Complete" 
+                      title="Complete Appointment"
+                    />
+                  </div>
                 )}
               </div>
             </div>
@@ -129,4 +136,4 @@ const AllAppointments = () => {
   )
 }
 
-export default AllAppointments;   
+export default DoctorAppointment;

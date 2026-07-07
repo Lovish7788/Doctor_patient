@@ -5,7 +5,8 @@ export const AppContext = createContext();
 const AppConextProvider = (props)=>
 {
 const value ={
-
+// currenrySymbol : '₹'
+currencySymbol : '$'
 }
 
 return (

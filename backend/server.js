@@ -16,7 +16,10 @@ app.use(express.json());
 app.use(cors({
   origin: [
     'https://doctor-patient-frontend.onrender.com',
-    process.env.ADMIN_FRONTEND_URL || 'https://doctor-patient-9amh.onrender.com'
+    process.env.ADMIN_FRONTEND_URL || 'https://doctor-patient-9amh.onrender.com',
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174'
   ]
 }));
 app.use('/api/admin', adminRouter)

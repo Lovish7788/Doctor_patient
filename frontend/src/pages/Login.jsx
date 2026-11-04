@@ -6,8 +6,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-const navigate = useNavigate();
-  const { backendUrl ,setToken, token} = useContext(AppContext)
+  const navigate = useNavigate();
+  const { backendUrl, setToken, token, userData } = useContext(AppContext)
   const [state, setState] = useState('Sign Up')
 
   const [email, setEmail] = useState('')
@@ -25,6 +25,7 @@ const navigate = useNavigate();
         if(data.success){
           localStorage.setItem('token', data.token)
           setToken(data.token);
+          navigate('/')
         }
         else{
           toast.error(data.message)
@@ -36,6 +37,7 @@ const navigate = useNavigate();
         if(data.success){
           localStorage.setItem('token', data.token)
           setToken(data.token);
+          navigate('/')
         }
         else{
           toast.error(data.message)
@@ -47,10 +49,10 @@ const navigate = useNavigate();
     }
   }
   useEffect(()=>{
-    if(token){
+    if(token && userData){
       navigate('/')
     }
-  },[token])
+  },[token, userData])
 
   return (
     <form onSubmit={onSubmitHandler} className='min-h-[80vh] flex items-center'>

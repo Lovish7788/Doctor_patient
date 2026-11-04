@@ -7,7 +7,7 @@ export const AppContext = createContext()
 
 const AppContextProvider = (props) => {
     const currencySymbol = "$"
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "srv-d96naegjs32c73996sn0";
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 
     const [doctors, setDoctors] = useState([])
     const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : '')
@@ -39,11 +39,18 @@ const AppContextProvider = (props) => {
                 setUserData(data.user)
             }
             else {
-                toast.error(data.message)
+                if (data.message === 'jwt expired' || data.message === 'Not Authorized Login Again') {
+                    // Session expired: clean up stale token to prevent redirect loops
+                    localStorage.removeItem('token')
+                    setToken('')
+                    setUserData(false)
+                    toast.info("Session expired. Please log in again.")
+                } else {
+                    toast.error(data.message)
+                }
             }
         } catch (error) {
             toast.error("something went wrong", error.message)
-
         }
     }
     const value = {
